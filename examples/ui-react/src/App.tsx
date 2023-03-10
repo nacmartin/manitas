@@ -1,6 +1,4 @@
-import "./App.css";
-import { a } from "shared-ui";
-console.log(a);
+import { a } from "manitas";
 
 function App() {
   return <div>{a()}</div>;
