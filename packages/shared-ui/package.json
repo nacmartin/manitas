@@ -2,7 +2,11 @@
   "private": true,
   "name": "shared-ui",
   "description": "Shared UI components",
-  "main": "dist/index.js",
+  "main": "dist/lib/index.js",
+  "typings": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rm -rf dist && tsc"
   },

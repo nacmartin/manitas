@@ -1,14 +1,22 @@
 {
   "compilerOptions": {
+    "moduleResolution": "node",
     "target": "es5",
-    "jsx": "react-jsx",
-    "allowJs": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "module": "commonjs",
+    "module":"es2015",
+    "lib": ["es2015", "es2016", "es2017", "dom"],
+    "strict": true,
+    "sourceMap": true,
     "declaration": true,
-    "outDir": "./dist"
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declarationDir": "dist/types",
+    "outDir": "dist/lib",
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   },
-  "include": ["."],
-  "exclude": ["dist", "node_modules", "**/*.spec.ts"]
+  "include": [
+    "src"
+  ]
 }
