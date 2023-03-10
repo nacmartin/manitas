@@ -3,7 +3,7 @@ import vision from "@mediapipe/tasks-vision";
 
 const { GestureRecognizer, FilesetResolver } = vision;
 
-const GESTURE_THRESHOLD = 0.8;
+const GESTURE_THRESHOLD = 0.6;
 const HANDEDNESS_THRESHOLD = 0.8;
 const ACTIVE_THRESHOLD = -0.1;
 
@@ -105,16 +105,16 @@ function runContinously(
     let nowInMs = Date.now();
     const results = gestureRecognizer.recognizeForVideo(video, nowInMs);
 
-    console.log(results);
     const { gestures, landmarks, worldLandmarks, handednesses } = results;
     let rightHand: HandState | null = null;
     let leftHand: HandState | null = null;
     handednesses.forEach((hand, idx) => {
       const category: vision.Category = hand[0];
       if (category.score > HANDEDNESS_THRESHOLD) {
-        if (category.categoryName === "Right") {
-          rightHand = assembleHandEstimation(gestures[idx], landmarks[idx]);
-        }
+        //if (category.categoryName === "Right") {
+        //  console.log("doing right");
+        //  rightHand = assembleHandEstimation(gestures[idx], landmarks[idx]);
+        //}
         if (category.categoryName === "Left") {
           leftHand = assembleHandEstimation(gestures[idx], landmarks[idx]);
         }
@@ -132,7 +132,15 @@ function runContinously(
   go();
 }
 
-function compareStatesAndEmitEvents(prevState: State, nextState: State) {}
+function compareStatesAndEmitEvents(prevState: State, nextState: State) {
+  //console.log(prevState.leftHand?.gesture, nextState.leftHand?.gesture);
+  if (!prevState.leftHand?.gesture && nextState.leftHand?.gesture) {
+    const event = new CustomEvent("gestureStarted", {
+      detail: { gesture: nextState.leftHand.gesture },
+    });
+    document.dispatchEvent(event);
+  }
+}
 
 function assembleHandEstimation(
   gestureCategory: vision.Category[],
@@ -153,11 +161,12 @@ function isActive(landmark: vision.NormalizedLandmark[]) {
 }
 
 function bestGesture(category: vision.Category[]) {
-  category.forEach((gesture) => {
-    if (gesture.score > GESTURE_THRESHOLD) {
+  for (let i = 0; i < category.length; i++) {
+    const gesture = category[i];
+    if (gesture.score > GESTURE_THRESHOLD && gesture.categoryName !== "None") {
       return gesture.categoryName;
     }
-  });
+  }
 
   return null;
 }
@@ -169,7 +178,6 @@ function getUserMedia(video: HTMLVideoElement, onSuccess: () => void) {
 
   // Activate the webcam stream.
   navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-    console.log(stream);
     video.srcObject = stream;
     video.addEventListener("loadeddata", () => {
       onSuccess();
