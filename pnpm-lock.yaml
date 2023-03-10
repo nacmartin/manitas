@@ -42,7 +42,10 @@ importers:
 
   packages/manitas:
     specifiers:
+      '@mediapipe/tasks-vision': 0.1.0-alpha-4
       typescript: ^4.9.5
+    dependencies:
+      '@mediapipe/tasks-vision': 0.1.0-alpha-4
     devDependencies:
       typescript: 4.9.5
 
@@ -1932,6 +1935,10 @@ packages:
 
   /@leichtgewicht/ip-codec/2.0.4:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
+    dev: false
+
+  /@mediapipe/tasks-vision/0.1.0-alpha-4:
+    resolution: {integrity: sha512-lfTlSJYMO7SD8LwJA9rozlljxey/g4RaYEJWXCHwVCQhRS3Mg2NwRnaKFmbnziyZeDiJEXiKe44Q1LkHNHEoZg==}
     dev: false
 
   /@nicolo-ribaudo/eslint-scope-5-internals/5.1.1-v1:
