@@ -1,12 +1,9 @@
 import "./App.css";
-import { Button } from "shared-ui";
+import { a } from "shared-ui";
+console.log(a);
 
 function App() {
-  return (
-    <div className="App">
-      <Button>ooo</Button>
-    </div>
-  );
+  return <div>{a()}</div>;
 }
 
 export default App;

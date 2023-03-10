@@ -1,1 +1,1 @@
-export * from './Button';
+export const a = () => "holoiooo11a";
