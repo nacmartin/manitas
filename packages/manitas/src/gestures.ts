@@ -3,17 +3,16 @@ import vision from "@mediapipe/tasks-vision";
 
 const { GestureRecognizer, FilesetResolver } = vision;
 
+// TODO: configure if left or right handed
+// Configure GPU
+// Size of video
+// Configure this?
 const GESTURE_THRESHOLD = 0.6;
 const HANDEDNESS_THRESHOLD = 0.8;
 const ACTIVE_THRESHOLD = -0.1;
 
-const runningMode = "VIDEO";
 const videoHeight = "720px";
 const videoWidth = "960px";
-
-// TODO: configure if left or right handed
-// Configure GPU
-// Size of video
 
 // Before we can use GestureRecognizer class we must wait for it to finish
 // loading. Machine Learning models can be large and take a moment to
@@ -30,7 +29,7 @@ async function load() {
       // TODO: Make configurable
       delegate: "GPU",
     },
-    runningMode: runningMode,
+    runningMode: "VIDEO",
     numHands: 2,
   });
 
@@ -133,10 +132,26 @@ function runContinously(
 }
 
 function compareStatesAndEmitEvents(prevState: State, nextState: State) {
+  emitGestures(prevState.leftHand, nextState.leftHand, "left");
   //console.log(prevState.leftHand?.gesture, nextState.leftHand?.gesture);
-  if (!prevState.leftHand?.gesture && nextState.leftHand?.gesture) {
+}
+
+type Hand = "left" | "right";
+
+function emitGestures(
+  prevState: HandState | null,
+  nextState: HandState | null,
+  hand: Hand
+) {
+  if ((!prevState || !prevState.gesture) && nextState && nextState.gesture) {
     const event = new CustomEvent("gestureStarted", {
-      detail: { gesture: nextState.leftHand.gesture },
+      detail: { gesture: nextState.gesture, hand },
+    });
+    document.dispatchEvent(event);
+  }
+  if ((!nextState || !nextState.gesture) && prevState && prevState.gesture) {
+    const event = new CustomEvent("gestureEnded", {
+      detail: { gesture: prevState.gesture, hand },
     });
     document.dispatchEvent(event);
   }
@@ -179,9 +194,7 @@ function getUserMedia(video: HTMLVideoElement, onSuccess: () => void) {
   // Activate the webcam stream.
   navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
     video.srcObject = stream;
-    video.addEventListener("loadeddata", () => {
-      onSuccess();
-    });
+    video.addEventListener("loadeddata", onSuccess);
   });
 }
 

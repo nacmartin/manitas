@@ -11,16 +11,19 @@ function unsubscribe(eventName: string, listener: any) {
 
 function App() {
   const gestureStarted = (e: any) => {
-    console.log("started!");
+    console.log(e);
+  };
+  const gestureEnded = (e: any) => {
     console.log(e);
   };
   useEffect(() => {
-    console.log("'init");
     init();
-    subscribe("gestureStarted", (e: any) => gestureStarted(e));
+    subscribe("gestureStarted", gestureStarted);
+    subscribe("gestureEnded", gestureEnded);
 
     return () => {
-      unsubscribe("gesturestarted", (e: any) => gestureStarted(e));
+      unsubscribe("gestureStarted", gestureStarted);
+      unsubscribe("gestureEnded", gestureEnded);
     };
   }, []);
 
