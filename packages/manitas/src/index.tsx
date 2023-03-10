@@ -1,1 +1,1 @@
-export const a = () => "holoi react";
+export const a = () => "holoi manitas";

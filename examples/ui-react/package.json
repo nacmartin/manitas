@@ -14,7 +14,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "shared-ui": "workspace:*",
     "start": "^5.1.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
