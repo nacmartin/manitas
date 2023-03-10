@@ -110,10 +110,9 @@ function runContinously(
     handednesses.forEach((hand, idx) => {
       const category: vision.Category = hand[0];
       if (category.score > HANDEDNESS_THRESHOLD) {
-        //if (category.categoryName === "Right") {
-        //  console.log("doing right");
-        //  rightHand = assembleHandEstimation(gestures[idx], landmarks[idx]);
-        //}
+        if (category.categoryName === "Right") {
+          rightHand = assembleHandEstimation(gestures[idx], landmarks[idx]);
+        }
         if (category.categoryName === "Left") {
           leftHand = assembleHandEstimation(gestures[idx], landmarks[idx]);
         }
@@ -133,6 +132,9 @@ function runContinously(
 
 function compareStatesAndEmitEvents(prevState: State, nextState: State) {
   emitGestures(prevState.leftHand, nextState.leftHand, "left");
+  emitGestures(prevState.rightHand, nextState.rightHand, "right");
+  emitAirfingers(prevState.leftHand, nextState.leftHand, "left");
+  emitAirfingers(prevState.rightHand, nextState.rightHand, "right");
   //console.log(prevState.leftHand?.gesture, nextState.leftHand?.gesture);
 }
 
@@ -144,14 +146,41 @@ function emitGestures(
   hand: Hand
 ) {
   if ((!prevState || !prevState.gesture) && nextState && nextState.gesture) {
-    const event = new CustomEvent("gestureStarted", {
+    const event = new CustomEvent("gesturestart", {
       detail: { gesture: nextState.gesture, hand },
     });
     document.dispatchEvent(event);
   }
   if ((!nextState || !nextState.gesture) && prevState && prevState.gesture) {
-    const event = new CustomEvent("gestureEnded", {
+    const event = new CustomEvent("gestureend", {
       detail: { gesture: prevState.gesture, hand },
+    });
+    document.dispatchEvent(event);
+  }
+}
+
+function emitAirfingers(
+  prevState: HandState | null,
+  nextState: HandState | null,
+  hand: Hand
+) {
+  if ((!prevState || !prevState.active) && nextState && nextState.active) {
+    const event = new CustomEvent("airfingerstart", {
+      detail: { airpoint: nextState.position, hand },
+    });
+    document.dispatchEvent(event);
+  } else if (
+    (!nextState || !nextState.active) &&
+    prevState &&
+    prevState.active
+  ) {
+    const event = new CustomEvent("airfingerend", {
+      detail: { airpoint: prevState.position, hand },
+    });
+    document.dispatchEvent(event);
+  } else if (prevState && prevState.active && nextState && nextState.active) {
+    const event = new CustomEvent("airfingermove", {
+      detail: { airpoint: prevState.position, hand },
     });
     document.dispatchEvent(event);
   }
