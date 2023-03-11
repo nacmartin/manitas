@@ -53,7 +53,8 @@ const tospring = (i: number) => ({
 });
 
 function App() {
-  const selected = useRef<{ card: number | null }>({ card: null });
+  const selectedRight = useRef<{ card: number | null }>({ card: null });
+  const selectedLeft = useRef<{ card: number | null }>({ card: null });
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [aniprops, api] = useSprings(cards.length, (i) => ({
     to: { ...tospring(i) },
@@ -88,7 +89,11 @@ function App() {
       const rect = el.getBoundingClientRect();
       //console.log(rect, inScreen(e.detail.airpoint));
       if (contains(rect, inScreen(e.detail.airpoint))) {
-        selected.current.card = i;
+        if (e.detail.hand === "left") {
+          selectedLeft.current.card = i;
+        } else {
+          selectedRight.current.card = i;
+        }
         //return {
         //  to: {
         //    scale: 1,
@@ -99,6 +104,8 @@ function App() {
   };
   const airfingerMove = (e: AirfingerEvent) => {
     api.start((i) => {
+      const hand = e.detail.hand;
+      const selected = hand === "right" ? selectedRight : selectedLeft;
       if (i === selected.current.card) {
         return {
           to: {
@@ -110,7 +117,9 @@ function App() {
       }
     });
   };
-  const airfingerEnded = (_e: AirfingerEvent) => {
+  const airfingerEnded = (e: AirfingerEvent) => {
+    const hand = e.detail.hand;
+    const selected = hand === "right" ? selectedRight : selectedLeft;
     selected.current.card = null;
     api.start((i) => {
       return {
