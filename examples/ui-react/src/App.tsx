@@ -26,14 +26,7 @@ const trans = (r: number, s: number, z: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${
     r / 10
   }deg) rotateZ(${r}deg) scale(${s + z})`;
-const cards = [
-  "https://upload.wikimedia.org/wikipedia/commons/f/f5/RWS_Tarot_08_Strength.jpg",
-  //"https://upload.wikimedia.org/wikipedia/commons/5/53/RWS_Tarot_16_Tower.jpg",
-  //"https://upload.wikimedia.org/wikipedia/commons/9/9b/RWS_Tarot_07_Chariot.jpg",
-  //"https://upload.wikimedia.org/wikipedia/commons/3/3a/TheLovers.jpg",
-  //"https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/RWS_Tarot_02_High_Priestess.jpg/690px-RWS_Tarot_02_High_Priestess.jpg",
-  //"https://upload.wikimedia.org/wikipedia/commons/d/de/RWS_Tarot_01_Magician.jpg",
-];
+const cards = ["/UD_1.mp4", "/Voyage.mp4"];
 
 function subscribe(eventName: string, listener: (e: any) => void) {
   document.addEventListener(eventName, listener);
@@ -53,8 +46,13 @@ const tospring = (i: number) => ({
 });
 
 function App() {
-  const selectedRight = useRef<{ card: number | null }>({ card: null });
-  const selectedLeft = useRef<{ card: number | null }>({ card: null });
+  const selectedRight = useRef<{
+    card: number | null;
+    lastCard: number | null;
+  }>({ card: null, lastCard: null });
+  const selectedLeft = useRef<{ card: number | null; lastCard: number | null }>(
+    { card: null, lastCard: null }
+  );
   const cardsRef = useRef<(HTMLDivElement | HTMLVideoElement | null)[]>([]);
   const [aniprops, api] = useSprings(cards.length, (i) => ({
     to: { ...tospring(i) },
@@ -76,14 +74,24 @@ function App() {
 
   const gestureStarted = (e: GestureEvent) => {
     if (e.detail.gesture === "ILoveYou") {
-      const video = cardsRef.current[0]?.children[0] as HTMLVideoElement;
-      video.play();
+      const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
+      const cardIdx = selected.current.lastCard;
+      if (cardIdx !== null) {
+        const video = cardsRef.current[cardIdx]
+          ?.children[0] as HTMLVideoElement;
+        video.play();
+      }
     }
   };
   const gestureEnded = (e: GestureEvent) => {
     if (e.detail.gesture === "ILoveYou") {
-      const video = cardsRef.current[0]?.children[0] as HTMLVideoElement;
-      video.pause();
+      const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
+      const cardIdx = selected.current.lastCard;
+      if (cardIdx !== null) {
+        const video = cardsRef.current[cardIdx]
+          ?.children[0] as HTMLVideoElement;
+        video.pause();
+      }
     }
   };
   const airfingerStarted = (e: AirfingerEvent) => {
@@ -126,6 +134,11 @@ function App() {
   const airfingerEnded = (e: AirfingerEvent) => {
     const hand = e.detail.hand;
     const selected = hand === "right" ? selectedRight : selectedLeft;
+    console.log(selected.current);
+    if (selected.current.card !== null) {
+      selected.current.lastCard = selected.current.card;
+      console.log(selected);
+    }
     selected.current.card = null;
     api.start((i) => {
       return {
@@ -171,32 +184,19 @@ function App() {
         }}
       >
         <div className={styles.deck}>
-          {aniprops.map((style, idx) =>
-            idx !== 0 ? (
-              <animated.div
-                key={idx}
-                ref={(el) => (cardsRef.current[idx] = el)}
-                style={{
-                  x: style.x,
-                  y: style.y,
-                  transform: to([style.rot, style.scale, style.zoom], trans),
-                  backgroundImage: `url(${cards[idx]})`,
-                }}
-              />
-            ) : (
-              <animated.div
-                key={idx}
-                ref={(el) => (cardsRef.current[idx] = el)}
-                style={{
-                  x: style.x,
-                  y: style.y,
-                  transform: to([style.rot, style.scale, style.zoom], trans),
-                }}
-              >
-                <video src="/UD_1.mp4" playsInline loop />
-              </animated.div>
-            )
-          )}
+          {aniprops.map((style, idx) => (
+            <animated.div
+              key={idx}
+              ref={(el) => (cardsRef.current[idx] = el)}
+              style={{
+                x: style.x,
+                y: style.y,
+                transform: to([style.rot, style.scale, style.zoom], trans),
+              }}
+            >
+              <video src={cards[idx]} playsInline loop />
+            </animated.div>
+          ))}
         </div>
       </div>
     </div>
