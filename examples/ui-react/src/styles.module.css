@@ -33,3 +33,15 @@
   box-shadow: 0 12.5px 100px -10px rgba(50, 50, 73, 0.4), 0 10px 10px -10px rgba(50, 50, 73, 0.3);
   position: absolute;
 }
+
+.cam {
+  position: absolute;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 960px;
+  height: 720px;
+}

@@ -45,14 +45,23 @@ const tospring = (i: number) => ({
   rot: -10 + Math.random() * 20,
 });
 
+interface HandStatus {
+  card: number | null;
+  lastCard: number | null;
+  gesture: string | null;
+}
+
 function App() {
-  const selectedRight = useRef<{
-    card: number | null;
-    lastCard: number | null;
-  }>({ card: null, lastCard: null });
-  const selectedLeft = useRef<{ card: number | null; lastCard: number | null }>(
-    { card: null, lastCard: null }
-  );
+  const selectedRight = useRef<HandStatus>({
+    card: null,
+    lastCard: null,
+    gesture: null,
+  });
+  const selectedLeft = useRef<HandStatus>({
+    card: null,
+    lastCard: null,
+    gesture: null,
+  });
   const cardsRef = useRef<(HTMLDivElement | HTMLVideoElement | null)[]>([]);
   const [aniprops, api] = useSprings(cards.length, (i) => ({
     to: { ...tospring(i) },
@@ -73,8 +82,11 @@ function App() {
   }));
 
   const gestureStarted = (e: GestureEvent) => {
-    if (e.detail.gesture === "ILoveYou") {
-      const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
+    const { gesture } = e.detail;
+    const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
+    selected.current.gesture = gesture;
+    if (gesture === "ILoveYou") {
+      selected.current.gesture = gesture;
       const cardIdx = selected.current.lastCard;
       if (cardIdx !== null) {
         const video = cardsRef.current[cardIdx]
@@ -84,8 +96,10 @@ function App() {
     }
   };
   const gestureEnded = (e: GestureEvent) => {
-    if (e.detail.gesture === "ILoveYou") {
-      const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
+    const { gesture } = e.detail;
+    const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
+    selected.current.gesture = gesture;
+    if (gesture === "ILoveYou") {
       const cardIdx = selected.current.lastCard;
       if (cardIdx !== null) {
         const video = cardsRef.current[cardIdx]
@@ -108,11 +122,6 @@ function App() {
         } else {
           selectedRight.current.card = i;
         }
-        //return {
-        //  to: {
-        //    scale: 1,
-        //  },
-        //};
       }
     });
   };
@@ -173,17 +182,9 @@ function App() {
         autoPlay
         playsInline
         //        style={{ position: "absolute", filter: "sepia(100%)" }}
-        style={{ position: "absolute" }}
+        className={styles.cam}
       />
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "960px",
-          height: "720px",
-        }}
-      >
+      <div className={styles.container}>
         <div className={styles.deck}>
           {aniprops.map((style, idx) => (
             <animated.div
