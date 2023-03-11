@@ -19,20 +19,21 @@ function App() {
     //console.log(e);
   };
   const airfingerStarted = (e: any) => {
-    console.log("start", e.detail.hand, e.detail.airpoint);
+    //console.log("start", e.detail.hand, e.detail.airpoint);
   };
   const airfingerMove = (e: any) => {
-    const point = e.detail.airpoint.x * 960;
+    const pointX = e.detail.airpoint.x * 960;
+    const pointY = e.detail.airpoint.y * 720;
     setLeft((left) => {
-      if (point < left + 50 && point > left) {
-        return point - 25;
+      if (pointX < left + 50 && pointX > left) {
+        return pointX - 25;
       } else {
         return left;
       }
     });
   };
   const airfingerEnded = (e: any) => {
-    console.log("end", e.detail.hand, e.detail.airpoint);
+    //console.log("end", e.detail.hand, e.detail.airpoint);
   };
   useEffect(() => {
     init();

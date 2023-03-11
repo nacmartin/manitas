@@ -1,5 +1,6 @@
-//import { continueStroke, startStroke } from "./brush";
 import vision from "@mediapipe/tasks-vision";
+import { emitGestures, emitAirfingers } from "./events";
+import type { HandsState, HandState } from "./types";
 
 const { GestureRecognizer, FilesetResolver } = vision;
 
@@ -67,31 +68,11 @@ function run(
   runContinously(video, gestureRecognizer);
 }
 
-type HandState = HandStateActive | HandStateInactive;
-interface Point3D {
-  x: number;
-  y: number;
-  z: number;
-}
-interface HandStateInactive {
-  gesture: string | null;
-  active: false;
-}
-interface HandStateActive {
-  gesture: string | null;
-  active: true;
-  position: Point3D;
-}
-interface State {
-  leftHand: HandState | null;
-  rightHand: HandState | null;
-}
-
 function runContinously(
   video: HTMLVideoElement,
   gestureRecognizer: vision.GestureRecognizer
 ) {
-  let state: State = {
+  let state: HandsState = {
     leftHand: {
       active: false,
       gesture: null,
@@ -120,7 +101,7 @@ function runContinously(
         }
       }
     });
-    const newState: State = {
+    const newState: HandsState = {
       rightHand,
       leftHand,
     };
@@ -132,64 +113,14 @@ function runContinously(
   go();
 }
 
-function compareStatesAndEmitEvents(prevState: State, nextState: State) {
+function compareStatesAndEmitEvents(
+  prevState: HandsState,
+  nextState: HandsState
+) {
   emitGestures(prevState.leftHand, nextState.leftHand, "left");
   emitGestures(prevState.rightHand, nextState.rightHand, "right");
   emitAirfingers(prevState.leftHand, nextState.leftHand, "left");
   emitAirfingers(prevState.rightHand, nextState.rightHand, "right");
-  //console.log(prevState.leftHand?.gesture, nextState.leftHand?.gesture);
-}
-
-type Hand = "left" | "right";
-
-function emitGestures(
-  prevState: HandState | null,
-  nextState: HandState | null,
-  hand: Hand
-) {
-  if ((!prevState || !prevState.gesture) && nextState && nextState.gesture) {
-    const event = new CustomEvent("gesturestart", {
-      detail: { gesture: nextState.gesture, hand },
-    });
-    document.dispatchEvent(event);
-  }
-  if ((!nextState || !nextState.gesture) && prevState && prevState.gesture) {
-    const event = new CustomEvent("gestureend", {
-      detail: { gesture: prevState.gesture, hand },
-    });
-    document.dispatchEvent(event);
-  }
-}
-
-function emitAirfingers(
-  prevState: HandState | null,
-  nextState: HandState | null,
-  hand: Hand
-) {
-  if ((!prevState || !prevState.active) && nextState && nextState.active) {
-    const event = new CustomEvent("airfingerstart", {
-      detail: { airpoint: flipX(nextState.position), hand },
-    });
-    document.dispatchEvent(event);
-  } else if (
-    (!nextState || !nextState.active) &&
-    prevState &&
-    prevState.active
-  ) {
-    const event = new CustomEvent("airfingerend", {
-      detail: { airpoint: flipX(prevState.position), hand },
-    });
-    document.dispatchEvent(event);
-  } else if (prevState && prevState.active && nextState && nextState.active) {
-    const event = new CustomEvent("airfingermove", {
-      detail: { airpoint: flipX(prevState.position), hand },
-    });
-    document.dispatchEvent(event);
-  }
-}
-
-function flipX(p: Point3D) {
-  return { ...p, x: 1 - p.x };
 }
 
 function assembleHandEstimation(
