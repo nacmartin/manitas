@@ -12,8 +12,8 @@ const GESTURE_THRESHOLD = 0.6;
 const HANDEDNESS_THRESHOLD = 0.8;
 const ACTIVE_THRESHOLD = -0.1;
 
-const videoHeight = "720px";
-const videoWidth = "960px";
+const videoHeight = "960px";
+const videoWidth = "1280px";
 
 // Before we can use GestureRecognizer class we must wait for it to finish
 // loading. Machine Learning models can be large and take a moment to

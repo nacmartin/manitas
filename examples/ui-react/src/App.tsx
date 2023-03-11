@@ -6,8 +6,8 @@ import styles from "./styles.module.css";
 
 function inScreen(point: Point3D) {
   return {
-    x: point.x * 960,
-    y: point.y * 720,
+    x: point.x * 1280,
+    y: point.y * 960,
     z: point.z,
   };
 }
@@ -89,12 +89,11 @@ function App() {
       //console.log(rect, inScreen(e.detail.airpoint));
       if (contains(rect, inScreen(e.detail.airpoint))) {
         selected.current.card = i;
-        //console.log(i);
-        return {
-          to: {
-            scale: 1,
-          },
-        };
+        //return {
+        //  to: {
+        //    scale: 1,
+        //  },
+        //};
       }
     });
   };
@@ -113,11 +112,13 @@ function App() {
   };
   const airfingerEnded = (_e: AirfingerEvent) => {
     selected.current.card = null;
-    return {
-      to: {
-        scale: 0.5,
-      },
-    };
+    api.start((i) => {
+      return {
+        to: {
+          scale: 0.5,
+        },
+      };
+    });
   };
 
   useEffect(() => {
