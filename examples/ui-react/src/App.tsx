@@ -1,6 +1,6 @@
 import { init } from "manitas";
 import { GestureEvent, AirfingerEvent } from "manitas";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSpring, useSpringRef, animated, to } from "@react-spring/web";
 
 function subscribe(eventName: string, listener: (e: any) => void) {
@@ -13,9 +13,17 @@ function unsubscribe(eventName: string, listener: (e: any) => void) {
 
 function App() {
   const api = useSpringRef();
+  const selected = useRef<number>(null);
   const styles = useSpring({
     ref: api,
     from: { x: 10, y: 10, scale: 1, zoom: 1 },
+    config: {
+      mass: 1,
+      friction: 10,
+      tension: 100,
+      delay: 1,
+      velocity: 100,
+    },
   });
 
   const gestureStarted = (e: GestureEvent) => {
@@ -27,7 +35,7 @@ function App() {
   const airfingerStarted = (e: AirfingerEvent) => {
     api.start({
       to: {
-        scale: 2,
+        scale: 5,
       },
     });
   };
