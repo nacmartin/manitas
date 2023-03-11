@@ -1,9 +1,25 @@
 import { init } from "manitas";
-import { GestureEvent, AirfingerEvent } from "manitas";
+import { GestureEvent, AirfingerEvent, Point3D } from "manitas";
 import { useEffect, useRef } from "react";
-import { useSprings, useSpringRef, animated, to } from "@react-spring/web";
+import { useSprings, animated, to } from "@react-spring/web";
 import styles from "./styles.module.css";
-console.log(styles);
+
+function inScreen(point: Point3D) {
+  return {
+    x: point.x * 960,
+    y: point.y * 720,
+    z: point.z,
+  };
+}
+
+function contains(rect: DOMRect, point: Point3D) {
+  return (
+    rect.left < point.x &&
+    rect.right > point.x &&
+    rect.top < point.y &&
+    rect.bottom > point.y
+  );
+}
 
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r: number, s: number, z: number) =>
@@ -37,7 +53,8 @@ const tospring = (i: number) => ({
 });
 
 function App() {
-  const selected = useRef<number>(null);
+  const selected = useRef<{ card: number | null }>({ card: null });
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const [aniprops, api] = useSprings(cards.length, (i) => ({
     to: { ...tospring(i) },
     from: {
@@ -50,7 +67,7 @@ function App() {
         mass: 1,
         friction: 10,
         tension: 100,
-        delay: 1,
+        delay: 0,
         velocity: 100,
       },
     },
@@ -63,28 +80,39 @@ function App() {
     //console.log(e);
   };
   const airfingerStarted = (e: AirfingerEvent) => {
-    api.start({
-      to: {
-        scale: 5,
-      },
+    api.start((i) => {
+      const el = cardsRef.current[i];
+      if (el === null) {
+        return {};
+      }
+      const rect = el.getBoundingClientRect();
+      if (contains(rect, inScreen(e.detail.airpoint))) {
+        selected.current.card = i;
+      }
+      return {
+        to: {
+          scale: 2,
+        },
+      };
     });
   };
   const airfingerMove = (e: AirfingerEvent) => {
-    api.start({
-      to: {
-        x: e.detail.airpoint.x * 960,
-        y: e.detail.airpoint.y * 720 - 80,
-        scale: 1.5,
-      },
+    api.start((i) => {
+      if (i === selected.current.card) {
+        return {
+          to: {
+            x: e.detail.airpoint.x * 960,
+            y: e.detail.airpoint.y * 720 - 80,
+            scale: 1.5,
+          },
+        };
+      }
     });
   };
-  const airfingerEnded = (e: any) => {
-    api.start({
-      to: {
-        scale: 1,
-      },
-    });
+  const airfingerEnded = (_e: AirfingerEvent) => {
+    selected.current.card = null;
   };
+
   useEffect(() => {
     init();
     subscribe("gesturestart", gestureStarted);
@@ -118,22 +146,17 @@ function App() {
         }}
       >
         <div className={styles.deck}>
-          {aniprops.map((style, i) => {
-            return (
-              <animated.div
-                style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: 8,
-                  opacity: 0.8,
-                  x: style.x,
-                  y: style.y,
-                  transform: to([style.rot, style.scale, style.zoom], trans),
-                  backgroundImage: `url(${cards[i]})`,
-                }}
-              />
-            );
-          })}
+          {aniprops.map((style, idx) => (
+            <animated.div
+              ref={(el) => (cardsRef.current[idx] = el)}
+              style={{
+                x: style.x,
+                y: style.y,
+                transform: to([style.rot, style.scale, style.zoom], trans),
+                backgroundImage: `url(${cards[idx]})`,
+              }}
+            />
+          ))}
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
 import { init } from "./gestures";
-import { GestureEvent, AirfingerEvent } from "./types";
+import { GestureEvent, AirfingerEvent, Point3D } from "./types";
 
-export { init, GestureEvent, AirfingerEvent };
+export { init, GestureEvent, AirfingerEvent, Point3D };
