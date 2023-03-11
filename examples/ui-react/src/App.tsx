@@ -45,10 +45,15 @@ const tospring = (i: number) => ({
   rot: -10 + Math.random() * 20,
 });
 
+interface Point2D {
+  x: number;
+  y: number;
+}
 interface HandStatus {
   card: number | null;
   lastCard: number | null;
   gesture: string | null;
+  zoomPosition: Point2D | null;
 }
 
 function App() {
@@ -56,11 +61,13 @@ function App() {
     card: null,
     lastCard: null,
     gesture: null,
+    zoomPosition: null,
   });
   const selectedLeft = useRef<HandStatus>({
     card: null,
     lastCard: null,
     gesture: null,
+    zoomPosition: null,
   });
   const cardsRef = useRef<(HTMLDivElement | HTMLVideoElement | null)[]>([]);
   const [aniprops, api] = useSprings(cards.length, (i) => ({
@@ -108,6 +115,43 @@ function App() {
       }
     }
   };
+  function distance(
+    p1: { x: number; y: number },
+    p2: { x: number; y: number }
+  ) {
+    return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p2.y - p2.y, 2));
+  }
+
+  const gestureMove = (e: GestureEvent) => {
+    const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
+    console.log(selectedRight.current, selectedLeft.current);
+    if (
+      selectedRight.current.gesture === "Open_Palm" &&
+      selectedLeft.current.gesture === "Open_Palm"
+    ) {
+      selected.current.zoomPosition = e.detail.airpoint;
+      api.start((i) => {
+        const selected = selectedRight;
+        console.log(selected.current.lastCard);
+        if (
+          i === selected.current.lastCard &&
+          selectedRight.current.zoomPosition &&
+          selectedLeft.current.zoomPosition
+        ) {
+          return {
+            to: {
+              zoom:
+                5 *
+                distance(
+                  selectedRight.current.zoomPosition,
+                  selectedLeft.current.zoomPosition
+                ),
+            },
+          };
+        }
+      });
+    }
+  };
   const airfingerStarted = (e: AirfingerEvent) => {
     api.start((i) => {
       const el = cardsRef.current[i];
@@ -143,10 +187,8 @@ function App() {
   const airfingerEnded = (e: AirfingerEvent) => {
     const hand = e.detail.hand;
     const selected = hand === "right" ? selectedRight : selectedLeft;
-    console.log(selected.current);
     if (selected.current.card !== null) {
       selected.current.lastCard = selected.current.card;
-      console.log(selected);
     }
     selected.current.card = null;
     api.start((i) => {
@@ -162,6 +204,7 @@ function App() {
     init();
     subscribe("gesturestart", gestureStarted);
     subscribe("gestureend", gestureEnded);
+    subscribe("gesturemove", gestureMove);
     subscribe("airfingerstart", airfingerStarted);
     subscribe("airfingerend", airfingerEnded);
     subscribe("airfingermove", airfingerMove);
@@ -169,6 +212,7 @@ function App() {
     return () => {
       unsubscribe("gesturestart", gestureStarted);
       unsubscribe("gestureend", gestureEnded);
+      unsubscribe("gesturemove", gestureMove);
       unsubscribe("airfingerstart", airfingerStarted);
       unsubscribe("airfingerend", airfingerEnded);
       unsubscribe("airfingermove", airfingerMove);
