@@ -46,8 +46,8 @@ function unsubscribe(eventName: string, listener: (e: any) => void) {
 const tospring = (i: number) => ({
   x: 0,
   y: i * -4,
-  scale: 1,
-  zoom: 1,
+  scale: 0.5,
+  zoom: 0.5,
   delay: i * 100,
   rot: -10 + Math.random() * 20,
 });
@@ -61,8 +61,8 @@ function App() {
       x: 0,
       rot: 0,
       y: 10,
-      scale: 1,
-      zoom: 1,
+      scale: 0.5,
+      zoom: 0.5,
       config: {
         mass: 1,
         friction: 10,
@@ -86,14 +86,16 @@ function App() {
         return {};
       }
       const rect = el.getBoundingClientRect();
+      //console.log(rect, inScreen(e.detail.airpoint));
       if (contains(rect, inScreen(e.detail.airpoint))) {
         selected.current.card = i;
+        //console.log(i);
+        return {
+          to: {
+            scale: 1,
+          },
+        };
       }
-      return {
-        to: {
-          scale: 2,
-        },
-      };
     });
   };
   const airfingerMove = (e: AirfingerEvent) => {
@@ -101,9 +103,9 @@ function App() {
       if (i === selected.current.card) {
         return {
           to: {
-            x: e.detail.airpoint.x * 960,
-            y: e.detail.airpoint.y * 720 - 80,
-            scale: 1.5,
+            x: inScreen(e.detail.airpoint).x - 960 / 2,
+            y: inScreen(e.detail.airpoint).y - 720 / 2,
+            scale: 0.7,
           },
         };
       }
@@ -111,6 +113,11 @@ function App() {
   };
   const airfingerEnded = (_e: AirfingerEvent) => {
     selected.current.card = null;
+    return {
+      to: {
+        scale: 0.5,
+      },
+    };
   };
 
   useEffect(() => {
@@ -140,7 +147,9 @@ function App() {
       />
       <div
         style={{
-          position: "absolute",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           width: "960px",
           height: "720px",
         }}
@@ -148,6 +157,7 @@ function App() {
         <div className={styles.deck}>
           {aniprops.map((style, idx) => (
             <animated.div
+              key={idx}
               ref={(el) => (cardsRef.current[idx] = el)}
               style={{
                 x: style.x,
