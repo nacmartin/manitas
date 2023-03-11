@@ -1,5 +1,5 @@
 import { init } from "manitas";
-import type { GestureEvent, AirfingerEvent } from "manitas";
+import { GestureEvent, AirfingerEvent } from "manitas";
 import { useEffect, useState } from "react";
 
 function subscribe(eventName: string, listener: any) {
