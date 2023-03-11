@@ -1,17 +1,22 @@
 import { init } from "manitas";
 import { GestureEvent, AirfingerEvent } from "manitas";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useSpring, useSpringRef, animated, to } from "@react-spring/web";
 
-function subscribe(eventName: string, listener: any) {
+function subscribe(eventName: string, listener: (e: any) => void) {
   document.addEventListener(eventName, listener);
 }
 
-function unsubscribe(eventName: string, listener: any) {
+function unsubscribe(eventName: string, listener: (e: any) => void) {
   document.removeEventListener(eventName, listener);
 }
 
 function App() {
-  const [left, setLeft] = useState(50);
+  const api = useSpringRef();
+  const styles = useSpring({
+    ref: api,
+    from: { x: 10, y: 10, scale: 1, zoom: 1 },
+  });
 
   const gestureStarted = (e: GestureEvent) => {
     //console.log(e);
@@ -20,21 +25,27 @@ function App() {
     //console.log(e);
   };
   const airfingerStarted = (e: AirfingerEvent) => {
-    //console.log("start", e.detail.hand, e.detail.airpoint);
+    api.start({
+      to: {
+        scale: 2,
+      },
+    });
   };
   const airfingerMove = (e: AirfingerEvent) => {
-    const pointX = e.detail.airpoint.x * 960;
-    const pointY = e.detail.airpoint.y * 720;
-    setLeft((left) => {
-      if (pointX < left + 50 && pointX > left) {
-        return pointX - 25;
-      } else {
-        return left;
-      }
+    api.start({
+      to: {
+        x: e.detail.airpoint.x * 960,
+        y: e.detail.airpoint.y * 720,
+        scale: 1.5,
+      },
     });
   };
   const airfingerEnded = (e: any) => {
-    //console.log("end", e.detail.hand, e.detail.airpoint);
+    api.start({
+      to: {
+        scale: 1,
+      },
+    });
   };
   useEffect(() => {
     init();
@@ -68,17 +79,18 @@ function App() {
           height: "720px",
         }}
       >
-        <div
+        <animated.div
           style={{
-            position: "absolute",
-            width: "50px",
-            height: "50px",
-            backgroundColor: "tomato",
+            width: 80,
+            height: 80,
+            background: "#ff6d6d",
+            borderRadius: 8,
             opacity: 0.8,
-            left: `${left}px`,
-            top: "100px",
+            x: styles.x,
+            y: styles.y,
+            scale: to([styles.scale, styles.zoom], (s, z) => s + z),
           }}
-        ></div>
+        />
       </div>
     </div>
   );
