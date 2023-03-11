@@ -63,6 +63,7 @@ function run(
 ) {
   video.style.height = videoHeight;
   video.style.width = videoWidth;
+  video.style.transform = "scaleX(-1)";
   runContinously(video, gestureRecognizer);
 }
 
@@ -110,10 +111,11 @@ function runContinously(
     handednesses.forEach((hand, idx) => {
       const category: vision.Category = hand[0];
       if (category.score > HANDEDNESS_THRESHOLD) {
-        if (category.categoryName === "Right") {
+        // Ugly: we flip hands because we need to flip video
+        if (category.categoryName === "Left") {
           rightHand = assembleHandEstimation(gestures[idx], landmarks[idx]);
         }
-        if (category.categoryName === "Left") {
+        if (category.categoryName === "Right") {
           leftHand = assembleHandEstimation(gestures[idx], landmarks[idx]);
         }
       }
@@ -166,7 +168,7 @@ function emitAirfingers(
 ) {
   if ((!prevState || !prevState.active) && nextState && nextState.active) {
     const event = new CustomEvent("airfingerstart", {
-      detail: { airpoint: nextState.position, hand },
+      detail: { airpoint: flipX(nextState.position), hand },
     });
     document.dispatchEvent(event);
   } else if (
@@ -175,15 +177,19 @@ function emitAirfingers(
     prevState.active
   ) {
     const event = new CustomEvent("airfingerend", {
-      detail: { airpoint: prevState.position, hand },
+      detail: { airpoint: flipX(prevState.position), hand },
     });
     document.dispatchEvent(event);
   } else if (prevState && prevState.active && nextState && nextState.active) {
     const event = new CustomEvent("airfingermove", {
-      detail: { airpoint: prevState.position, hand },
+      detail: { airpoint: flipX(prevState.position), hand },
     });
     document.dispatchEvent(event);
   }
+}
+
+function flipX(p: Point3D) {
+  return { ...p, x: 1 - p.x };
 }
 
 function assembleHandEstimation(
