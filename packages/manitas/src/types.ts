@@ -1,18 +1,25 @@
-export type HandState = HandStateActive | HandStateInactive;
+export type HandState = HandStateActive | HandStateInactive | HandStateAbsent;
 export interface Point3D {
   x: number;
   y: number;
   z: number;
 }
+export interface HandStateAbsent {
+  present: false;
+}
 export interface HandStateInactive {
   gesture: string | null;
+  present: true;
   active: false;
+  position: Point3D;
 }
 export interface HandStateActive {
   gesture: string | null;
+  present: true;
   active: true;
   position: Point3D;
 }
+
 export interface HandsState {
   leftHand: HandState | null;
   rightHand: HandState | null;
@@ -35,4 +42,5 @@ export interface AirfingerEventParams {
 export interface GestureEventParams {
   gesture: string;
   hand: Hand;
+  airpoint: Point3D;
 }

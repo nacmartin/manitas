@@ -74,12 +74,10 @@ function runContinously(
 ) {
   let state: HandsState = {
     leftHand: {
-      active: false,
-      gesture: null,
+      present: false,
     },
     rightHand: {
-      active: false,
-      gesture: null,
+      present: false,
     },
   };
   function go() {
@@ -87,8 +85,8 @@ function runContinously(
     const results = gestureRecognizer.recognizeForVideo(video, nowInMs);
 
     const { gestures, landmarks, worldLandmarks, handednesses } = results;
-    let rightHand: HandState | null = null;
-    let leftHand: HandState | null = null;
+    let rightHand: HandState = { present: false };
+    let leftHand: HandState = { present: false };
     handednesses.forEach((hand, idx) => {
       const category: vision.Category = hand[0];
       if (category.score > HANDEDNESS_THRESHOLD) {
@@ -101,6 +99,7 @@ function runContinously(
         }
       }
     });
+
     const newState: HandsState = {
       rightHand,
       leftHand,
@@ -131,6 +130,7 @@ function assembleHandEstimation(
   const active = isActive(landmarks);
   return {
     gesture,
+    present: true,
     active,
     position: landmarks[8],
   };
