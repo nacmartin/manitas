@@ -28,11 +28,11 @@ const trans = (r: number, s: number, z: number) =>
   }deg) rotateZ(${r}deg) scale(${s + z})`;
 const cards = [
   "https://upload.wikimedia.org/wikipedia/commons/f/f5/RWS_Tarot_08_Strength.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/5/53/RWS_Tarot_16_Tower.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/9/9b/RWS_Tarot_07_Chariot.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/3/3a/TheLovers.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/RWS_Tarot_02_High_Priestess.jpg/690px-RWS_Tarot_02_High_Priestess.jpg",
-  "https://upload.wikimedia.org/wikipedia/commons/d/de/RWS_Tarot_01_Magician.jpg",
+  //"https://upload.wikimedia.org/wikipedia/commons/5/53/RWS_Tarot_16_Tower.jpg",
+  //"https://upload.wikimedia.org/wikipedia/commons/9/9b/RWS_Tarot_07_Chariot.jpg",
+  //"https://upload.wikimedia.org/wikipedia/commons/3/3a/TheLovers.jpg",
+  //"https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/RWS_Tarot_02_High_Priestess.jpg/690px-RWS_Tarot_02_High_Priestess.jpg",
+  //"https://upload.wikimedia.org/wikipedia/commons/d/de/RWS_Tarot_01_Magician.jpg",
 ];
 
 function subscribe(eventName: string, listener: (e: any) => void) {
@@ -55,7 +55,7 @@ const tospring = (i: number) => ({
 function App() {
   const selectedRight = useRef<{ card: number | null }>({ card: null });
   const selectedLeft = useRef<{ card: number | null }>({ card: null });
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const cardsRef = useRef<(HTMLDivElement | HTMLVideoElement | null)[]>([]);
   const [aniprops, api] = useSprings(cards.length, (i) => ({
     to: { ...tospring(i) },
     from: {
@@ -75,10 +75,16 @@ function App() {
   }));
 
   const gestureStarted = (e: GestureEvent) => {
-    //console.log(e);
+    if (e.detail.gesture === "ILoveYou") {
+      const video = cardsRef.current[0]?.children[0] as HTMLVideoElement;
+      video.play();
+    }
   };
   const gestureEnded = (e: GestureEvent) => {
-    //console.log(e);
+    if (e.detail.gesture === "ILoveYou") {
+      const video = cardsRef.current[0]?.children[0] as HTMLVideoElement;
+      video.pause();
+    }
   };
   const airfingerStarted = (e: AirfingerEvent) => {
     api.start((i) => {
@@ -165,18 +171,32 @@ function App() {
         }}
       >
         <div className={styles.deck}>
-          {aniprops.map((style, idx) => (
-            <animated.div
-              key={idx}
-              ref={(el) => (cardsRef.current[idx] = el)}
-              style={{
-                x: style.x,
-                y: style.y,
-                transform: to([style.rot, style.scale, style.zoom], trans),
-                backgroundImage: `url(${cards[idx]})`,
-              }}
-            />
-          ))}
+          {aniprops.map((style, idx) =>
+            idx !== 0 ? (
+              <animated.div
+                key={idx}
+                ref={(el) => (cardsRef.current[idx] = el)}
+                style={{
+                  x: style.x,
+                  y: style.y,
+                  transform: to([style.rot, style.scale, style.zoom], trans),
+                  backgroundImage: `url(${cards[idx]})`,
+                }}
+              />
+            ) : (
+              <animated.div
+                key={idx}
+                ref={(el) => (cardsRef.current[idx] = el)}
+                style={{
+                  x: style.x,
+                  y: style.y,
+                  transform: to([style.rot, style.scale, style.zoom], trans),
+                }}
+              >
+                <video src="/UD_1.mp4" playsInline loop />
+              </animated.div>
+            )
+          )}
         </div>
       </div>
     </div>
