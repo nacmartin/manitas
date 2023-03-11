@@ -26,7 +26,7 @@ const trans = (r: number, s: number, z: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${
     r / 10
   }deg) rotateZ(${r}deg) scale(${s + z})`;
-const cards = ["/UD_1.mp4", "/Voyage.mp4"];
+const cards = ["/UD_1.mp4", "/Voyage.mp4", "./Chev.mp4"];
 
 function subscribe(eventName: string, listener: (e: any) => void) {
   document.addEventListener(eventName, listener);
@@ -172,6 +172,7 @@ function App() {
         id="webcam"
         autoPlay
         playsInline
+        //        style={{ position: "absolute", filter: "sepia(100%)" }}
         style={{ position: "absolute" }}
       />
       <div
