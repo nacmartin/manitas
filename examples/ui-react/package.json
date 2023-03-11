@@ -15,7 +15,6 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "start": "^5.1.0",
-    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -41,5 +40,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.54.1",
+    "eslint": "^8.36.0",
+    "typescript": "^4.9.5"
   }
 }

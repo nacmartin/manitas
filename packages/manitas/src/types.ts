@@ -20,6 +20,19 @@ export interface HandsState {
 export type Hand = "left" | "right";
 
 export interface GestureEvent {
+  detail: GestureEventParams;
+}
+
+export interface AirfingerEvent {
+  detail: AirfingerEventParams;
+}
+
+export interface AirfingerEventParams {
+  airpoint: Point3D;
+  hand: Hand;
+}
+
+export interface GestureEventParams {
   gesture: string;
   hand: Hand;
 }

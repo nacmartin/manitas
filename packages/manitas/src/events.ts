@@ -1,12 +1,17 @@
-import type { GestureEvent, Hand, HandState, Point3D } from "./types";
-
+import type {
+  Hand,
+  HandState,
+  Point3D,
+  AirfingerEventParams,
+  GestureEventParams,
+} from "./types";
 export function emitGestures(
   prevState: HandState | null,
   nextState: HandState | null,
   hand: Hand
 ) {
   if ((!prevState || !prevState.gesture) && nextState && nextState.gesture) {
-    const event = new CustomEvent<GestureEvent>("gesturestart", {
+    const event = new CustomEvent<GestureEventParams>("gesturestart", {
       detail: { gesture: nextState.gesture, hand },
     });
     document.dispatchEvent(event);
@@ -25,7 +30,7 @@ export function emitAirfingers(
   hand: Hand
 ) {
   if ((!prevState || !prevState.active) && nextState && nextState.active) {
-    const event = new CustomEvent("airfingerstart", {
+    const event = new CustomEvent<AirfingerEventParams>("airfingerstart", {
       detail: { airpoint: flipX(nextState.position), hand },
     });
     document.dispatchEvent(event);
@@ -34,12 +39,12 @@ export function emitAirfingers(
     prevState &&
     prevState.active
   ) {
-    const event = new CustomEvent("airfingerend", {
+    const event = new CustomEvent<AirfingerEventParams>("airfingerend", {
       detail: { airpoint: flipX(prevState.position), hand },
     });
     document.dispatchEvent(event);
   } else if (prevState && prevState.active && nextState && nextState.active) {
-    const event = new CustomEvent("airfingermove", {
+    const event = new CustomEvent<AirfingerEventParams>("airfingermove", {
       detail: { airpoint: flipX(prevState.position), hand },
     });
     document.dispatchEvent(event);

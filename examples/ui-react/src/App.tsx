@@ -1,4 +1,5 @@
 import { init } from "manitas";
+import type { GestureEvent, AirfingerEvent } from "manitas";
 import { useEffect, useState } from "react";
 
 function subscribe(eventName: string, listener: any) {
@@ -12,16 +13,16 @@ function unsubscribe(eventName: string, listener: any) {
 function App() {
   const [left, setLeft] = useState(50);
 
-  const gestureStarted = (e: any) => {
+  const gestureStarted = (e: GestureEvent) => {
     //console.log(e);
   };
-  const gestureEnded = (e: any) => {
+  const gestureEnded = (e: GestureEvent) => {
     //console.log(e);
   };
-  const airfingerStarted = (e: any) => {
+  const airfingerStarted = (e: AirfingerEvent) => {
     //console.log("start", e.detail.hand, e.detail.airpoint);
   };
-  const airfingerMove = (e: any) => {
+  const airfingerMove = (e: AirfingerEvent) => {
     const pointX = e.detail.airpoint.x * 960;
     const pointY = e.detail.airpoint.y * 720;
     setLeft((left) => {
