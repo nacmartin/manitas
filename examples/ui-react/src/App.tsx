@@ -90,7 +90,7 @@ function App() {
 
   const gestureStarted = (e: GestureEvent) => {
     const { gesture } = e.detail;
-    const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
+    const selected = e.detail.hand === "right" ? selectedRight : selectedLeft;
     selected.current.gesture = gesture;
     if (gesture === "ILoveYou") {
       selected.current.gesture = gesture;
@@ -100,6 +100,26 @@ function App() {
           ?.children[0] as HTMLVideoElement;
         video.play();
       }
+    }
+    if (gesture === "Thumb_Up") {
+      const cardIdx = selected.current.lastCard;
+      api.start((i) => {
+        if (i === cardIdx) {
+          return {
+            to: { y: -500 },
+          };
+        }
+      });
+    }
+    if (gesture === "Thumb_Down") {
+      const cardIdx = selected.current.lastCard;
+      api.start((i) => {
+        if (i === cardIdx) {
+          return {
+            to: { y: +900 },
+          };
+        }
+      });
     }
   };
   const gestureEnded = (e: GestureEvent) => {
@@ -126,7 +146,6 @@ function App() {
   }
 
   const gestureMove = (e: GestureEvent) => {
-    console.log(e.detail);
     const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
     if (
       selectedRight.current.gesture === "Open_Palm" &&
@@ -143,10 +162,6 @@ function App() {
           selectedRight.current.zoomPosition &&
           selectedLeft.current.zoomPosition
         ) {
-          const pCenter = center(
-            selectedRight.current.zoomPosition,
-            selectedLeft.current.zoomPosition
-          );
           const zoom = distance(
             selectedRight.current.zoomPosition,
             selectedLeft.current.zoomPosition
@@ -154,8 +169,6 @@ function App() {
           return {
             to: {
               zoom: 5 * zoom,
-              x: pCenter.x,
-              y: pCenter.y,
             },
           };
         }
