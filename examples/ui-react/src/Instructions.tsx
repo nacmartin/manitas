@@ -7,7 +7,7 @@ import raisedHand from "./images/raised-hand.png";
 export function Instructions() {
   return (
     <div style={{ width: 1280, margin: "0 auto", paddingBottom: 100 }}>
-      <h2>WTH is this</h2>
+      <h2>WHAT is this</h2>
       This is an example of usage of{" "}
       <a
         href="
