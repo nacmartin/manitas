@@ -3,14 +3,14 @@ import { GestureEvent, AirfingerEvent } from "manitas";
 import { useEffect, useRef } from "react";
 import { useSprings, animated, to } from "@react-spring/web";
 import styles from "./styles.module.css";
-import { contains, distance, inScreen } from "./geometry";
+import { contains, inScreen } from "./geometry";
 
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r: number, s: number, z: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${
     r / 10
   }deg) rotateZ(${r}deg) scale(${s * z})`;
-const cards = ["/UD_1.mp4", "/Voyage.mp4", "./Chev.mp4"];
+const cards = ["./Chev.mp4", "/UD_1.mp4", "/Voyage.mp4"];
 
 // Who knows the type here TBH
 function subscribe(eventName: string, listener: (e: any) => void) {
@@ -72,7 +72,11 @@ function App() {
       if (cardIdx !== null) {
         const video = cardsRef.current[cardIdx]
           ?.children[0] as HTMLVideoElement;
-        video.play();
+        if (!video.paused && !video.ended && video.readyState > 2) {
+          video.pause();
+        } else {
+          video.play();
+        }
       }
     }
     if (gesture === "Thumb_Up") {
@@ -100,14 +104,14 @@ function App() {
     const { gesture } = e.detail;
     const selected = e.detail.hand === "right" ? selectedRight : selectedLeft;
     selected.current.gesture = gesture;
-    if (gesture === "ILoveYou") {
-      const cardIdx = selected.current.lastCard;
-      if (cardIdx !== null) {
-        const video = cardsRef.current[cardIdx]
-          ?.children[0] as HTMLVideoElement;
-        video.pause();
-      }
-    }
+    //if (gesture === "ILoveYou") {
+    //  const cardIdx = selected.current.lastCard;
+    //  if (cardIdx !== null) {
+    //    const video = cardsRef.current[cardIdx]
+    //      ?.children[0] as HTMLVideoElement;
+    //    video.pause();
+    //  }
+    //}
   };
   const gestureMove = (e: GestureEvent) => {
     const selected = e.detail.hand === "right" ? selectedRight : selectedLeft;

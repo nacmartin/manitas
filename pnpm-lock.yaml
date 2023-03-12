@@ -20,6 +20,7 @@ importers:
       '@types/react-dom': ^18.0.11
       '@typescript-eslint/eslint-plugin': ^5.54.1
       '@typescript-eslint/parser': ^5.54.1
+      canvas-confetti: ^1.6.0
       eslint: ^8.36.0
       manitas: workspace:*
       react: ^18.2.0
@@ -37,6 +38,7 @@ importers:
       '@types/node': 16.18.14
       '@types/react': 18.0.28
       '@types/react-dom': 18.0.11
+      canvas-confetti: 1.6.0
       manitas: link:../../packages/manitas
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -3654,6 +3656,10 @@ packages:
 
   /caniuse-lite/1.0.30001464:
     resolution: {integrity: sha512-oww27MtUmusatpRpCGSOneQk2/l5czXANDSFvsc7VuOQ86s3ANhZetpwXNf1zY/zdfP63Xvjz325DAdAoES13g==}
+    dev: false
+
+  /canvas-confetti/1.6.0:
+    resolution: {integrity: sha512-ej+w/m8Jzpv9Z7W7uJZer14Ke8P2ogsjg4ZMGIuq4iqUOqY2Jq8BNW42iGmNfRwREaaEfFIczLuZZiEVSYNHAA==}
     dev: false
 
   /case-sensitive-paths-webpack-plugin/2.4.0:
