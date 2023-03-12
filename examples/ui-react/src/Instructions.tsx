@@ -7,6 +7,20 @@ import raisedHand from "./images/raised-hand.png";
 export function Instructions() {
   return (
     <div style={{ width: 1280, margin: "0 auto", paddingBottom: 100 }}>
+      <h2>WTH is this</h2>
+      This is an example of usage of{" "}
+      <a
+        href="
+https://github.com/nacmartin/manitas
+      "
+      >
+        manitas
+      </a>{" "}
+      with React.{" "}
+      <a href="https://github.com/nacmartin/manitas">See the source code</a>.
+      You can move your hands and point to the cards to move them and perform
+      several actions, like making the Victory{" "}
+      <img src={victoryHand} height="24px" /> gesture to throw some confetti.
       <h2>Usage</h2>
       <h3>Selecting/Moving</h3>
       <p>
@@ -31,6 +45,20 @@ export function Instructions() {
           />
         </p>
       </center>
+      <p>
+        Also, note that the whole hand must be visible so the super turbo
+        Machine Learning Google MediaPipe that we are using here can estimate
+        correctly if your finger is part of a hand or is a piece of sausage
+        coming from the sides.
+      </p>
+      <p>
+        At the beginning it may be difficult, but after some minutes of practice
+        this interface becomes quite natural. You probably don't remember, but
+        learning to use a mouse is not easy either and needs practice as well. I
+        said the previous sentence with the authority earned by teaching how to
+        use computers to the elderly (including nuns) in the first years of the
+        millenium.
+      </p>
       <h3>Gestures</h3>
       <p>You can use some gestures:</p>
       <ul>
@@ -45,10 +73,7 @@ export function Instructions() {
           <img src={thumbsUp} height="24px" />: Throw last selected video far
           away above the window.
         </li>
-        <li>
-          <img src={thumbsUp} height="24px" />: Throw last selected video far
-          away below the window.
-        </li>
+        <li>away below the window.</li>
         <li>
           <img src={thumbsDown} height="24px" />: Throw last selected video far
           away below the window.
@@ -57,17 +82,6 @@ export function Instructions() {
           <img src={victoryHand} height="24px" />: Confetti!
         </li>
       </ul>
-      <h2>Code</h2>
-      This is an example of usage of{" "}
-      <a
-        href="
-https://github.com/nacmartin/manitas
-      "
-      >
-        manitas
-      </a>{" "}
-      with React.{" "}
-      <a href="https://github.com/nacmartin/manitas">See the code</a>
       <h2>Notes</h2>
       <p>
         We have configured mediapipe to use the GPU. It is possible to make it
