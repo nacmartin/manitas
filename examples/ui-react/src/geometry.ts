@@ -28,3 +28,15 @@ export function center(
 ) {
   return { x: p1.x + (p1.x - p2.x) / 2, y: p1.y + (p1.y - p2.y) / 2 };
 }
+
+export function rectRelativeToParent(rect: DOMRect, rectParent: DOMRect) {
+  return {
+    x: rect.x - rectParent.x,
+    y: rect.y - rectParent.y,
+    width: rect.width,
+    left: rect.left - rectParent.left,
+    top: rect.top - rectParent.top,
+    right: rect.width + rect.left - rectParent.left,
+    bottom: rect.height + rect.top - rectParent.top,
+  } as DOMRect;
+}

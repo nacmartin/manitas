@@ -3,7 +3,7 @@ import { GestureEvent, AirfingerEvent } from "manitas";
 import { useEffect, useRef } from "react";
 import { useSprings, animated, to } from "@react-spring/web";
 import styles from "./styles.module.css";
-import { contains, inScreen } from "./geometry";
+import { contains, inScreen, rectRelativeToParent } from "./geometry";
 import confetti from "canvas-confetti";
 import { Instructions } from "./Instructions";
 
@@ -34,7 +34,8 @@ const trans = (r: number, s: number, z: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${
     r / 10
   }deg) rotateZ(${r}deg) scale(${s * z})`;
-const cards = ["./Chev.mp4", "/Voyage.mp4", "/UD_1.mp4"];
+//const cards = ["./Chev.mp4", "/Voyage.mp4", "/UD_1.mp4"];
+const cards = ["./Chev.mp4"]; //, "/Voyage.mp4", "/UD_1.mp4"];
 
 // Who knows the type here TBH
 function subscribe(eventName: string, listener: (e: any) => void) {
@@ -67,7 +68,8 @@ function App() {
     gesture: null,
     zoomPosition: null,
   });
-  const cardsRef = useRef<(HTMLDivElement | HTMLVideoElement | null)[]>([]);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef = useRef<HTMLDivElement | null>();
   const [aniprops, api] = useSprings(cards.length, (i) => ({
     to: { ...tospring(i) },
     from: {
@@ -157,13 +159,18 @@ function App() {
       });
     }
   };
+
   const airfingerStarted = (e: AirfingerEvent) => {
     api.start((i) => {
       const el = cardsRef.current[i];
-      if (el === null) {
+      const parentel = containerRef.current;
+      if (el === null || !parentel) {
         return {};
       }
-      const rect = el.getBoundingClientRect();
+      const rect = rectRelativeToParent(
+        el.getBoundingClientRect(),
+        parentel.getBoundingClientRect()
+      );
       if (contains(rect, inScreen(e.detail.airpoint))) {
         if (e.detail.hand === "left") {
           selectedLeft.current.card = i;
@@ -173,6 +180,7 @@ function App() {
       }
     });
   };
+
   const airfingerMove = (e: AirfingerEvent) => {
     api.start((i) => {
       const hand = e.detail.hand;
@@ -225,7 +233,9 @@ function App() {
 
   return (
     <>
-      <h1>Manitas React Example</h1>
+      <center>
+        <h1>Manitas React Example</h1>
+      </center>
       <div className={styles.center}>
         <video
           id="webcam"
@@ -237,6 +247,7 @@ function App() {
         <div
           className={styles.container}
           style={{ width: `${AREA_WIDTH}px`, height: `${AREA_HEIGHT}px` }}
+          ref={(el) => (containerRef.current = el)}
         >
           <div className={styles.deck}>
             {aniprops.map((style, idx) => (
@@ -255,7 +266,9 @@ function App() {
           </div>
         </div>
       </div>
-      <Instructions />
+      <center>
+        <Instructions />
+      </center>
     </>
   );
 }
