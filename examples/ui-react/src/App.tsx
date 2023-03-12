@@ -25,7 +25,7 @@ function contains(rect: DOMRect, point: Point3D) {
 const trans = (r: number, s: number, z: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${
     r / 10
-  }deg) rotateZ(${r}deg) scale(${s + z})`;
+  }deg) rotateZ(${r}deg) scale(${s * z})`;
 const cards = ["/UD_1.mp4", "/Voyage.mp4", "./Chev.mp4"];
 
 function subscribe(eventName: string, listener: (e: any) => void) {
@@ -39,8 +39,8 @@ function unsubscribe(eventName: string, listener: (e: any) => void) {
 const tospring = (i: number) => ({
   x: 0,
   y: i * -4,
-  scale: 0.5,
-  zoom: 0.5,
+  scale: 1,
+  zoom: 1,
   delay: i * 100,
   rot: -10 + Math.random() * 20,
 });
@@ -76,8 +76,8 @@ function App() {
       x: 0,
       rot: 0,
       y: 10,
-      scale: 0.5,
-      zoom: 0.5,
+      scale: 1,
+      zoom: 1,
       config: {
         mass: 1,
         friction: 10,
@@ -121,31 +121,41 @@ function App() {
   ) {
     return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p2.y - p2.y, 2));
   }
+  function center(p1: { x: number; y: number }, p2: { x: number; y: number }) {
+    return { x: p1.x + (p1.x - p2.x) / 2, y: p1.y + (p1.y - p2.y) / 2 };
+  }
 
   const gestureMove = (e: GestureEvent) => {
+    console.log(e.detail);
     const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
-    console.log(selectedRight.current, selectedLeft.current);
     if (
       selectedRight.current.gesture === "Open_Palm" &&
       selectedLeft.current.gesture === "Open_Palm"
     ) {
       selected.current.zoomPosition = e.detail.airpoint;
+      if (e.detail.hand !== "right") {
+        return;
+      }
       api.start((i) => {
         const selected = selectedRight;
-        console.log(selected.current.lastCard);
         if (
           i === selected.current.lastCard &&
           selectedRight.current.zoomPosition &&
           selectedLeft.current.zoomPosition
         ) {
+          const pCenter = center(
+            selectedRight.current.zoomPosition,
+            selectedLeft.current.zoomPosition
+          );
+          const zoom = distance(
+            selectedRight.current.zoomPosition,
+            selectedLeft.current.zoomPosition
+          );
           return {
             to: {
-              zoom:
-                5 *
-                distance(
-                  selectedRight.current.zoomPosition,
-                  selectedLeft.current.zoomPosition
-                ),
+              zoom: 5 * zoom,
+              x: pCenter.x,
+              y: pCenter.y,
             },
           };
         }
@@ -178,7 +188,7 @@ function App() {
           to: {
             x: inScreen(e.detail.airpoint).x - 960 / 2,
             y: inScreen(e.detail.airpoint).y - 720 / 2,
-            scale: 0.7,
+            scale: 1.2,
           },
         };
       }
@@ -194,7 +204,7 @@ function App() {
     api.start((i) => {
       return {
         to: {
-          scale: 0.5,
+          scale: 1,
         },
       };
     });
