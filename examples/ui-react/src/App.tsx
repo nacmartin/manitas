@@ -110,29 +110,14 @@ function App() {
     }
   };
   const gestureMove = (e: GestureEvent) => {
-    const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
-    if (
-      selectedRight.current.gesture === "Open_Palm" &&
-      selectedLeft.current.gesture === "Open_Palm"
-    ) {
-      selected.current.zoomPosition = e.detail.airpoint;
-      if (e.detail.hand !== "right") {
-        return;
-      }
+    const selected = e.detail.hand === "right" ? selectedRight : selectedLeft;
+    if (selected.current.gesture === "Open_Palm") {
       api.start((i) => {
-        const selected = selectedRight;
-        if (
-          i === selected.current.lastCard &&
-          selectedRight.current.zoomPosition &&
-          selectedLeft.current.zoomPosition
-        ) {
-          const zoom = distance(
-            selectedRight.current.zoomPosition,
-            selectedLeft.current.zoomPosition
-          );
+        if (i === selected.current.lastCard) {
+          const zoom = Math.abs(0.5 - 3 * e.detail.airpoint.z);
           return {
             to: {
-              zoom: 5 * zoom,
+              zoom: 3 * zoom,
             },
           };
         }
@@ -146,7 +131,6 @@ function App() {
         return {};
       }
       const rect = el.getBoundingClientRect();
-      //console.log(rect, inScreen(e.detail.airpoint));
       if (contains(rect, inScreen(e.detail.airpoint))) {
         if (e.detail.hand === "left") {
           selectedLeft.current.card = i;
