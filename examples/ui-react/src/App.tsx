@@ -9,6 +9,25 @@ import confetti from "canvas-confetti";
 const AREA_WIDTH = 1200;
 const AREA_HEIGHT = 960;
 
+function interpolateZoom(z: number) {
+  const x1 = 0.05;
+  const x2 = -0.2;
+  const y1 = 0.4;
+  const y2 = 2.5;
+  const raw = y1 + ((z - x1) * (y2 - y1)) / (x2 - x1);
+  return zoomClamp(raw, y1, y2);
+}
+
+function zoomClamp(raw: number, min: number, max: number) {
+  if (raw < min) {
+    return min;
+  }
+  if (raw > max) {
+    return max;
+  }
+  return raw;
+}
+
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r: number, s: number, z: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${
@@ -120,24 +139,17 @@ function App() {
     const { gesture } = e.detail;
     const selected = e.detail.hand === "right" ? selectedRight : selectedLeft;
     selected.current.gesture = gesture;
-    //if (gesture === "ILoveYou") {
-    //  const cardIdx = selected.current.lastCard;
-    //  if (cardIdx !== null) {
-    //    const video = cardsRef.current[cardIdx]
-    //      ?.children[0] as HTMLVideoElement;
-    //    video.pause();
-    //  }
-    //}
   };
+
   const gestureMove = (e: GestureEvent) => {
     const selected = e.detail.hand === "right" ? selectedRight : selectedLeft;
     if (selected.current.gesture === "Open_Palm") {
       api.start((i) => {
         if (i === selected.current.lastCard) {
-          const zoom = Math.abs(0.5 - 3 * e.detail.airpoint.z);
+          const zoom = Math.abs(interpolateZoom(e.detail.airpoint.z));
           return {
             to: {
-              zoom: 3 * zoom,
+              zoom,
             },
           };
         }
