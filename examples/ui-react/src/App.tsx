@@ -266,9 +266,7 @@ function App() {
           </div>
         </div>
       </div>
-      <center>
-        <Instructions />
-      </center>
+      <Instructions />
     </>
   );
 }

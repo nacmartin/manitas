@@ -1,6 +1,6 @@
 export function Instructions() {
   return (
-    <div>
+    <div style={{ width: 1280, margin: "0 auto", paddingBottom: 100 }}>
       <h2>Usage</h2>
       <h3>Selecting/Moving</h3>
       <p>
@@ -16,15 +16,15 @@ export function Instructions() {
         So, in the following image, the left one is an event, and the right one
         is not.
       </p>
-      <p>
-        <center>
+      <center>
+        <p>
           <img
             src="https://user-images.githubusercontent.com/154258/224560435-988c4649-9ec6-46f2-90a9-57ba58871595.png"
             alt="hands"
             width={600}
           />
-        </center>
-      </p>
+        </p>
+      </center>
       <h3>Gestures</h3>
       <p>You can use some gestures:</p>
       <ul>
@@ -36,7 +36,15 @@ export function Instructions() {
         <li>✌️: Confetti!</li>
       </ul>
       <h2>Code</h2>
-      This is an example of usage of manitas.
+      This is an example of usage of{" "}
+      <a
+        href="
+https://github.com/nacmartin/manitas
+      "
+      >
+        manitas
+      </a>{" "}
+      with React.{" "}
       <a href="https://github.com/nacmartin/manitas">See the code</a>
     </div>
   );
