@@ -5,6 +5,7 @@ import { useSprings, animated, to } from "@react-spring/web";
 import styles from "./styles.module.css";
 import { contains, inScreen } from "./geometry";
 import confetti from "canvas-confetti";
+import { Instructions } from "./Instructions";
 
 const AREA_WIDTH = 1200;
 const AREA_HEIGHT = 960;
@@ -223,35 +224,39 @@ function App() {
   }, []);
 
   return (
-    <div className={styles.center}>
-      <video
-        id="webcam"
-        autoPlay
-        playsInline
-        //        style={{ position: "absolute", filter: "sepia(100%)" }}
-        className={styles.cam}
-      />
-      <div
-        className={styles.container}
-        style={{ width: `${AREA_WIDTH}px`, height: `${AREA_HEIGHT}px` }}
-      >
-        <div className={styles.deck}>
-          {aniprops.map((style, idx) => (
-            <animated.div
-              key={idx}
-              ref={(el) => (cardsRef.current[idx] = el)}
-              style={{
-                x: style.x,
-                y: style.y,
-                transform: to([style.rot, style.scale, style.zoom], trans),
-              }}
-            >
-              <video src={cards[idx]} playsInline loop />
-            </animated.div>
-          ))}
+    <>
+      <h1>Manitas React Example</h1>
+      <div className={styles.center}>
+        <video
+          id="webcam"
+          autoPlay
+          playsInline
+          //        style={{ position: "absolute", filter: "sepia(100%)" }}
+          className={styles.cam}
+        />
+        <div
+          className={styles.container}
+          style={{ width: `${AREA_WIDTH}px`, height: `${AREA_HEIGHT}px` }}
+        >
+          <div className={styles.deck}>
+            {aniprops.map((style, idx) => (
+              <animated.div
+                key={idx}
+                ref={(el) => (cardsRef.current[idx] = el)}
+                style={{
+                  x: style.x,
+                  y: style.y,
+                  transform: to([style.rot, style.scale, style.zoom], trans),
+                }}
+              >
+                <video src={cards[idx]} playsInline loop />
+              </animated.div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+      <Instructions />
+    </>
   );
 }
 
