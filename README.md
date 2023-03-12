@@ -1,7 +1,7 @@
 <div align="center">
 <h1> ☝️☝️ <br/>
 Manitas</h1>
-Move your fingers in the air to interact with computers
+Move your fingers in the air to interact with the web
 </div>
 <br/><br/><br/>
 
