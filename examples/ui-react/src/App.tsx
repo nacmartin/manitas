@@ -13,7 +13,7 @@ function interpolateZoom(z: number) {
   const x1 = 0.05;
   const x2 = -0.2;
   const y1 = 0.4;
-  const y2 = 2.5;
+  const y2 = 3;
   const raw = y1 + ((z - x1) * (y2 - y1)) / (x2 - x1);
   return zoomClamp(raw, y1, y2);
 }
