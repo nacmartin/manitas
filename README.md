@@ -27,7 +27,11 @@ import { init } from "manitas";
 
 // In some async function
 await init();
+
+// Or as a promise
+init().then(...)
 ```
+
 And then you can listen to these events:
 ```js
 document.addEventListener('gesturestart', listener);
@@ -37,6 +41,14 @@ document.addEventListener('airfingerstart', listener);
 document.addEventListener('airfingermove', listener);
 document.addEventListener('airfingerend', listener);
 ```
+
+### Examples
+
+Check out the [examples](examples/) folder:
+
+* [ui-react](examples/ui-react): Usage in React to select items, drag them around and trigger actions with gestures. [See it live](http://manitas-react.limenius.com).
+* airpaint (coming soon).
+
 
 ## Events
 
