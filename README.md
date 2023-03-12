@@ -32,6 +32,9 @@ await init();
 init().then(...)
 ```
 
+`init` takes some time because Machine Learning models can be large and take a moment to get everything needed to run. Also, in `init()` we ask for
+permission to use the camera and capture a video stream.
+
 And then you can listen to these events:
 ```js
 document.addEventListener('gesturestart', listener);
