@@ -1,25 +1,9 @@
 import { init } from "manitas";
-import { GestureEvent, AirfingerEvent, Point3D } from "manitas";
+import { GestureEvent, AirfingerEvent } from "manitas";
 import { useEffect, useRef } from "react";
 import { useSprings, animated, to } from "@react-spring/web";
 import styles from "./styles.module.css";
-
-function inScreen(point: Point3D) {
-  return {
-    x: point.x * 1280,
-    y: point.y * 960,
-    z: point.z,
-  };
-}
-
-function contains(rect: DOMRect, point: Point3D) {
-  return (
-    rect.left < point.x &&
-    rect.right > point.x &&
-    rect.top < point.y &&
-    rect.bottom > point.y
-  );
-}
+import { contains, distance, inScreen } from "./geometry";
 
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r: number, s: number, z: number) =>
@@ -28,6 +12,7 @@ const trans = (r: number, s: number, z: number) =>
   }deg) rotateZ(${r}deg) scale(${s * z})`;
 const cards = ["/UD_1.mp4", "/Voyage.mp4", "./Chev.mp4"];
 
+// Who knows the type here TBH
 function subscribe(eventName: string, listener: (e: any) => void) {
   document.addEventListener(eventName, listener);
 }
@@ -44,17 +29,6 @@ const tospring = (i: number) => ({
   delay: i * 100,
   rot: -10 + Math.random() * 20,
 });
-
-interface Point2D {
-  x: number;
-  y: number;
-}
-interface HandStatus {
-  card: number | null;
-  lastCard: number | null;
-  gesture: string | null;
-  zoomPosition: Point2D | null;
-}
 
 function App() {
   const selectedRight = useRef<HandStatus>({
@@ -106,7 +80,7 @@ function App() {
       api.start((i) => {
         if (i === cardIdx) {
           return {
-            to: { y: -500 },
+            to: { y: -700 },
           };
         }
       });
@@ -124,7 +98,7 @@ function App() {
   };
   const gestureEnded = (e: GestureEvent) => {
     const { gesture } = e.detail;
-    const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
+    const selected = e.detail.hand === "right" ? selectedRight : selectedLeft;
     selected.current.gesture = gesture;
     if (gesture === "ILoveYou") {
       const cardIdx = selected.current.lastCard;
@@ -135,16 +109,6 @@ function App() {
       }
     }
   };
-  function distance(
-    p1: { x: number; y: number },
-    p2: { x: number; y: number }
-  ) {
-    return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p2.y - p2.y, 2));
-  }
-  function center(p1: { x: number; y: number }, p2: { x: number; y: number }) {
-    return { x: p1.x + (p1.x - p2.x) / 2, y: p1.y + (p1.y - p2.y) / 2 };
-  }
-
   const gestureMove = (e: GestureEvent) => {
     const selected = e.detail.hand === "right" ? selectedLeft : selectedRight;
     if (
