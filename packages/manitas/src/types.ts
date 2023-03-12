@@ -44,3 +44,15 @@ export interface GestureEventParams {
   hand: Hand;
   airpoint: Point3D;
 }
+
+export interface ManitasConfig {
+  gestureThreshold: number;
+  gandednessThreshold: number;
+  activeThreshold: number;
+  videoHeight: string;
+  videoWidth: string;
+  videoId: string;
+  delegate: "GPU" | "CPU";
+  modelAssetPath: string;
+  mediapipeWasmPath: string;
+}

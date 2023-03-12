@@ -29,7 +29,10 @@ export function Instructions() {
       <p>You can use some gestures:</p>
       <ul>
         <li>🤟: To play/stop last selected video.</li>
-        <li>✋: To zoom in/out.</li>
+        <li>
+          ✋: To zoom in/out (Incline palm forward/backward in an angle with the
+          wrist).
+        </li>
         <li>👍: Throw last selected video far away above the window.</li>
         <li>👎: Throw last selected video far away below the window.</li>
         <li>👎: Throw last selected video far away below the window.</li>
@@ -46,6 +49,11 @@ https://github.com/nacmartin/manitas
       </a>{" "}
       with React.{" "}
       <a href="https://github.com/nacmartin/manitas">See the code</a>
+      <h2>Notes</h2>
+      <p>
+        We have configured mediapipe to use the GPU. It is possible to make it
+        use the CPU. So if it doesn't work, that may be the reason.
+      </p>
     </div>
   );
 }

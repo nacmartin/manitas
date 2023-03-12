@@ -34,8 +34,7 @@ const trans = (r: number, s: number, z: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${
     r / 10
   }deg) rotateZ(${r}deg) scale(${s * z})`;
-//const cards = ["./Chev.mp4", "/Voyage.mp4", "/UD_1.mp4"];
-const cards = ["./Chev.mp4"]; //, "/Voyage.mp4", "/UD_1.mp4"];
+const cards = ["./Chev.mp4", "/Voyage.mp4", "/UD_1.mp4"];
 
 // Who knows the type here TBH
 function subscribe(eventName: string, listener: (e: any) => void) {
@@ -213,7 +212,7 @@ function App() {
   };
 
   useEffect(() => {
-    init();
+    init({ delegate: "GPU" });
     subscribe("gesturestart", gestureStarted);
     subscribe("gestureend", gestureEnded);
     subscribe("gesturemove", gestureMove);
@@ -241,7 +240,7 @@ function App() {
           id="webcam"
           autoPlay
           playsInline
-          //        style={{ position: "absolute", filter: "sepia(100%)" }}
+          style={{ height: "960px", width: "1280px" }}
           className={styles.cam}
         />
         <div
