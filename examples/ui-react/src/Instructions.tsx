@@ -1,3 +1,9 @@
+import thumbsDown from "./images/thumbs-down.png";
+import thumbsUp from "./images/thumbs-up.png";
+import ily from "./images/love-you-gesture.png";
+import victoryHand from "./images/victory-hand.png";
+import raisedHand from "./images/raised-hand.png";
+
 export function Instructions() {
   return (
     <div style={{ width: 1280, margin: "0 auto", paddingBottom: 100 }}>
@@ -28,15 +34,28 @@ export function Instructions() {
       <h3>Gestures</h3>
       <p>You can use some gestures:</p>
       <ul>
-        <li>🤟: To play/stop last selected video.</li>
         <li>
-          ✋: To zoom in/out (Incline palm forward/backward in an angle with the
-          wrist).
+          <img src={ily} height="24px" />: To play/stop last selected video.
         </li>
-        <li>👍: Throw last selected video far away above the window.</li>
-        <li>👎: Throw last selected video far away below the window.</li>
-        <li>👎: Throw last selected video far away below the window.</li>
-        <li>✌️: Confetti!</li>
+        <li>
+          <img src={raisedHand} height="24px" />: To zoom in/out (Incline palm
+          forward/backward in an angle with the wrist).
+        </li>
+        <li>
+          <img src={thumbsUp} height="24px" />: Throw last selected video far
+          away above the window.
+        </li>
+        <li>
+          <img src={thumbsUp} height="24px" />: Throw last selected video far
+          away below the window.
+        </li>
+        <li>
+          <img src={thumbsDown} height="24px" />: Throw last selected video far
+          away below the window.
+        </li>
+        <li>
+          <img src={victoryHand} height="24px" />: Confetti!
+        </li>
       </ul>
       <h2>Code</h2>
       This is an example of usage of{" "}
