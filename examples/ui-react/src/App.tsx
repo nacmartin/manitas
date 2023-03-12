@@ -4,13 +4,17 @@ import { useEffect, useRef } from "react";
 import { useSprings, animated, to } from "@react-spring/web";
 import styles from "./styles.module.css";
 import { contains, inScreen } from "./geometry";
+import confetti from "canvas-confetti";
+
+const AREA_WIDTH = 1200;
+const AREA_HEIGHT = 960;
 
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r: number, s: number, z: number) =>
   `perspective(1500px) rotateX(30deg) rotateY(${
     r / 10
   }deg) rotateZ(${r}deg) scale(${s * z})`;
-const cards = ["./Chev.mp4", "/UD_1.mp4", "/Voyage.mp4"];
+const cards = ["./Chev.mp4", "/Voyage.mp4", "/UD_1.mp4"];
 
 // Who knows the type here TBH
 function subscribe(eventName: string, listener: (e: any) => void) {
@@ -99,6 +103,18 @@ function App() {
         }
       });
     }
+    if (gesture === "Victory") {
+      confetti({
+        particleCount: 100,
+        startVelocity: 30,
+        spread: 360,
+        scalar: 2,
+        origin: {
+          x: ((1 - e.detail.airpoint.x) * AREA_WIDTH) / window.innerWidth,
+          y: e.detail.airpoint.y + 0.2,
+        },
+      });
+    }
   };
   const gestureEnded = (e: GestureEvent) => {
     const { gesture } = e.detail;
@@ -151,8 +167,8 @@ function App() {
       if (i === selected.current.card) {
         return {
           to: {
-            x: inScreen(e.detail.airpoint).x - 960 / 2,
-            y: inScreen(e.detail.airpoint).y - 720 / 2,
+            x: inScreen(e.detail.airpoint).x - AREA_WIDTH / 2,
+            y: inScreen(e.detail.airpoint).y - AREA_HEIGHT / 2,
             scale: 1.2,
           },
         };
@@ -195,7 +211,7 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <div className={styles.center}>
       <video
         id="webcam"
         autoPlay
@@ -203,7 +219,10 @@ function App() {
         //        style={{ position: "absolute", filter: "sepia(100%)" }}
         className={styles.cam}
       />
-      <div className={styles.container}>
+      <div
+        className={styles.container}
+        style={{ width: `${AREA_WIDTH}px`, height: `${AREA_HEIGHT}px` }}
+      >
         <div className={styles.deck}>
           {aniprops.map((style, idx) => (
             <animated.div
