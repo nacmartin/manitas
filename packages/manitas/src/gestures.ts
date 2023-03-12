@@ -6,7 +6,7 @@ const { GestureRecognizer, FilesetResolver } = vision;
 
 const defaultConfig: ManitasConfig = {
   gestureThreshold: 0.6,
-  gandednessThreshold: 0.8,
+  handednessThreshold: 0.8,
   activeThreshold: -0.1,
   videoHeight: "960px",
   videoWidth: "1280px",
@@ -91,7 +91,7 @@ function runContinously(
     let leftHand: HandState = { present: false };
     handednesses.forEach((hand, idx) => {
       const category: vision.Category = hand[0];
-      if (category.score > config.gandednessThreshold) {
+      if (category.score > config.handednessThreshold) {
         // Ugly: we flip hands because we need to flip video
         if (category.categoryName === "Left") {
           rightHand = assembleHandEstimation(

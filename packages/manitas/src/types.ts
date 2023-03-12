@@ -47,7 +47,7 @@ export interface GestureEventParams {
 
 export interface ManitasConfig {
   gestureThreshold: number;
-  gandednessThreshold: number;
+  handednessThreshold: number;
   activeThreshold: number;
   videoHeight: string;
   videoWidth: string;
