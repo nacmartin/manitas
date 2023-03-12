@@ -98,5 +98,34 @@ export interface GestureEventParams {
 }
 ```
 
-*Note: It is possible to train mediapipe to recognize more gestures, but this library does not have support for custom gestures yet.*
+*Note: It is possible to train mediapipe to recognize more gestures. See mediapipe docs and provide a model in config*
+
+## Configure
+
+The method `init()` accepts an optional argument with a configuration object:
+
+```typescript
+interface ManitasConfig {
+  gestureThreshold: number;
+  handednessThreshold: number;
+  activeThreshold: number;
+  videoHeight: string;
+  videoWidth: string;
+  videoId: string;
+  delegate: "GPU" | "CPU";
+  modelAssetPath: string;
+  mediapipeWasmPath: string;
+}
+```
+
+* gestureThreshold: Confidence threshold to decide if a gesture has been detected.
+* handednessThreshold: Confidence threshold to decide if a gesture has been detected.
+* activeThreshold: Threshold to decide if the user is pointing.
+* videoId: Id of a video element to attach the webcam stream;
+* videoHeight: Height of the video element;
+* videoWidth: Width of the video element;
+* delegate: "GPU" | "CPU", Are we using GPU or CPU for estimation?
+* modelAssetPath: Custom model if you have defined custom gestures.
+* mediapipeWasmPath: Path to mediapipe wasm.
+
 
