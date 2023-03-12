@@ -3,7 +3,12 @@ import { GestureEvent, AirfingerEvent } from "manitas";
 import { useEffect, useRef } from "react";
 import { useSprings, animated, to } from "@react-spring/web";
 import styles from "./styles.module.css";
-import { contains, inScreen, rectRelativeToParent } from "./geometry";
+import {
+  confettiPosition,
+  contains,
+  inScreen,
+  rectRelativeToParent,
+} from "./geometry";
 import confetti from "canvas-confetti";
 import { Instructions } from "./Instructions";
 
@@ -125,15 +130,19 @@ function App() {
       });
     }
     if (gesture === "Victory") {
+      if (!containerRef.current) {
+        return;
+      }
+      const position = confettiPosition(
+        e.detail.airpoint,
+        containerRef.current.getBoundingClientRect()
+      );
       confetti({
         particleCount: 100,
         startVelocity: 30,
         spread: 360,
         scalar: 2,
-        origin: {
-          x: ((1 - e.detail.airpoint.x) * AREA_WIDTH) / window.innerWidth,
-          y: e.detail.airpoint.y + 0.2,
-        },
+        origin: position,
       });
     }
   };

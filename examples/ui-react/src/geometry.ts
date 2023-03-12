@@ -1,4 +1,13 @@
 import { Point3D } from "manitas";
+export function confettiPosition(point: Point3D, container: DOMRect): Point2D {
+  const { x: xRect, y: yRect } = container;
+  const canvasPos = inScreen({ x: 1 - point.x, y: point.y, z: point.z });
+  return {
+    x: (xRect + canvasPos.x) / window.innerWidth,
+    y: (yRect + canvasPos.y) / window.innerHeight,
+  };
+}
+
 export function inScreen(point: Point3D) {
   return {
     x: point.x * 1280,
