@@ -131,4 +131,10 @@ interface ManitasConfig {
 * modelAssetPath: Custom model if you have defined custom gestures.
 * mediapipeWasmPath: Path to mediapipe wasm.
 
+## Caveats
+
+Q: **Do I need to have a video element in the page displaying the signal from the camera?**
+
+A: I haven't figured out how to run MediaPipe without it, so a video element is needed. But you can hide it (`display:none`)!
+
 
