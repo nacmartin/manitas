@@ -243,6 +243,9 @@ function App() {
     <>
       <center>
         <h1>Manitas React Example</h1>
+        <p>
+          (This example is buch better in desktop, not ready for mobile yet!)
+        </p>
       </center>
       <div className={styles.center}>
         <video

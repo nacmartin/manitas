@@ -87,6 +87,10 @@ https://github.com/nacmartin/manitas
         We have configured mediapipe to use the GPU. It is possible to make it
         use the CPU. So if it doesn't work, that may be the reason.
       </p>
+      <p>
+        About mobile: this can made it work in mobile, but I haven't spent the
+        time in making this web responsive and whatnot yet!
+      </p>
     </div>
   );
 }
