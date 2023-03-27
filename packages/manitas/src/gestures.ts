@@ -82,7 +82,12 @@ function runContinously(
       present: false,
     },
   };
-  function go() {
+  //let LAST_FRAME_TIME = 0;
+  function go(TIME: number) {
+    //let fps = 1 / ((performance.now() - LAST_FRAME_TIME) / 1000);
+    //console.log(fps);
+
+    //LAST_FRAME_TIME = TIME;
     let nowInMs = Date.now();
     const results = gestureRecognizer.recognizeForVideo(video, nowInMs);
 
@@ -91,6 +96,7 @@ function runContinously(
     let leftHand: HandState = { present: false };
     handednesses.forEach((hand, idx) => {
       const category: vision.Category = hand[0];
+
       if (category.score > config.handednessThreshold) {
         // Ugly: we flip hands because we need to flip video
         if (category.categoryName === "Left") {
@@ -119,7 +125,7 @@ function runContinously(
 
     window.requestAnimationFrame(go);
   }
-  go();
+  go(0);
 }
 
 function compareStatesAndEmitEvents(
