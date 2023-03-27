@@ -77,6 +77,7 @@ export interface AirfingerEventParams {
 }
 ```
 
+*Note: MediaPipe actually gives us more data. It gives us the position of 18 nodes of the hand (the joints). We are filtering data to extract the meaning we want. The data we extract may and will very likely change in next versions as we experiment with this.*
 
 ### Gestures
 
