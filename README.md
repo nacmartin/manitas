@@ -50,7 +50,7 @@ document.addEventListener('airfingerend', listener);
 Check out the [examples](examples/) folder:
 
 * [ui-react](examples/ui-react): Usage in React to select items, drag them around and trigger actions with gestures. [See it live](http://manitas-react.limenius.com).
-* airpaint (coming soon).
+* [airpaint](examples/paint): Paint with your fingers in the air ([see demo](https://twitter.com/nacmartin/status/1634119535430082560)). 
 
 
 ## Events
