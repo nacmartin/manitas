@@ -27,7 +27,7 @@ async function load(config: ManitasConfig) {
   const gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
     baseOptions: {
       modelAssetPath: config.modelAssetPath,
-      delegate: config.delegate,
+      //delegate: config.delegate,
     },
     runningMode: "VIDEO",
     numHands: 2,
