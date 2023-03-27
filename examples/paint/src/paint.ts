@@ -1,9 +1,9 @@
 import { init, AirfingerEvent } from "manitas";
-import tinycolor from "tinycolor2";
 import { continueStroke, startStroke } from "./brush";
+import { normalizedToPixelCoords } from "./geometry";
+import { colors, maybeSelectColor, setupPallete } from "./pallete";
 
-const WIDTH = 1280;
-const HEIGHT = 960;
+let colorIdx = 0;
 
 export function setupPaint(canvasElement: HTMLCanvasElement | null) {
   if (!canvasElement) {
@@ -12,27 +12,58 @@ export function setupPaint(canvasElement: HTMLCanvasElement | null) {
   }
   init({ delegate: "GPU" });
   const canvasCtx = canvasElement.getContext("2d");
-  if (!canvasCtx) {
+  if (canvasCtx === null) {
     console.warn("Unable to get canvas context");
   }
   const document: Document = window.document;
-  document.addEventListener("airfingerstart", airfingerStart);
-  document.addEventListener("airfingermove", airfingerMove(canvasCtx));
+  document.addEventListener(
+    "airfingerstart",
+    airfingerStart(canvasCtx as CanvasRenderingContext2D)
+  );
+  document.addEventListener(
+    "airfingermove",
+    airfingerMove(canvasCtx as CanvasRenderingContext2D)
+  );
   document.addEventListener("airfingerend", airfingerEnd);
-  setupPallete(canvasCtx as CanvasRenderingContext2D);
+  setupPallete(canvasCtx as CanvasRenderingContext2D, colorIdx);
 }
 
-function airfingerStart(event: Event) {
-  const detail = (event as AirfingerEvent).detail;
-  const { x, y } = detail.airpoint;
-  startStroke([x * WIDTH, y * HEIGHT], colors[colorIdx]);
+function airfingerStart(canvasCtx: CanvasRenderingContext2D) {
+  return function (event: Event) {
+    const detail = (event as AirfingerEvent).detail;
+    const hand = detail.hand;
+    const { x, y } = detail.airpoint;
+    if (hand === "left") {
+      const colorSelected = maybeSelectColor([x, y]);
+      if (colorSelected !== false) {
+        colorIdx = colorSelected;
+        setupPallete(canvasCtx, colorIdx);
+      }
+    } else {
+      const point = normalizedToPixelCoords([x, y]);
+      startStroke(point, colors[colorIdx]);
+    }
+  };
 }
 
 function airfingerMove(canvasCtx: CanvasRenderingContext2D) {
   return function (event: Event) {
     const detail = (event as AirfingerEvent).detail;
+    const { hand } = detail;
     const { x, y } = detail.airpoint;
-    continueStroke([x * WIDTH, y * HEIGHT], canvasCtx);
+    if (hand === "right") {
+      canvasCtx.save();
+      continueStroke(normalizedToPixelCoords([x, y]), canvasCtx);
+      canvasCtx.restore();
+    }
+    if (hand === "left") {
+      const colorSelected = maybeSelectColor([x, y]);
+      if (colorSelected !== false) {
+        colorIdx = colorSelected;
+        setupPallete(canvasCtx, colorIdx);
+      }
+    } else {
+    }
   };
 }
 
@@ -40,26 +71,3 @@ function airfingerEnd(event: Event) {
   const detail = (event as AirfingerEvent).detail;
   //console.log(detail);
 }
-
-let colorIdx = 0;
-
-function setupPallete(canvasCtx: CanvasRenderingContext2D) {
-  canvasCtx.clearRect(5, 15, 160, 480);
-  colors.forEach((color, idx) => {
-    console.log(idx);
-    const colorPallete = tinycolor(color);
-    canvasCtx.fillStyle =
-      idx === colorIdx
-        ? colorPallete.setAlpha(0.9).toString()
-        : colorPallete.setAlpha(0.5).toString();
-    console.log(canvasCtx.fillStyle);
-    canvasCtx.fillRect(10, 120 * idx + 30, 150, 100);
-  });
-}
-
-const colors = [
-  "rgb(0, 161, 157, 0.5)",
-  "rgb(255, 248, 229, 0.5)",
-  "rgb(255, 179, 68,0.5)",
-  "rgb(224, 93, 93,0.5)",
-];
