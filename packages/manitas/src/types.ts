@@ -30,7 +30,7 @@ export interface GestureEvent {
   detail: GestureEventParams;
 }
 
-export interface AirfingerEvent {
+export interface AirfingerEvent extends CustomEvent {
   detail: AirfingerEventParams;
 }
 
