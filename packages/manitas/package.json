@@ -20,6 +20,6 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@mediapipe/tasks-vision": "0.1.0-alpha-4"
+    "@mediapipe/tasks-vision": "0.1.0-alpha-5"
   }
 }

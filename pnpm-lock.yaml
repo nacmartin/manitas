@@ -55,13 +55,13 @@ importers:
 
   packages/manitas:
     specifiers:
-      '@mediapipe/tasks-vision': 0.1.0-alpha-4
+      '@mediapipe/tasks-vision': 0.1.0-alpha-5
       '@typescript-eslint/eslint-plugin': ^5.54.1
       '@typescript-eslint/parser': ^5.54.1
       eslint: ^8.36.0
       typescript: ^4.9.5
     dependencies:
-      '@mediapipe/tasks-vision': 0.1.0-alpha-4
+      '@mediapipe/tasks-vision': 0.1.0-alpha-5
     devDependencies:
       '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
       '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
@@ -1964,8 +1964,8 @@ packages:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: false
 
-  /@mediapipe/tasks-vision/0.1.0-alpha-4:
-    resolution: {integrity: sha512-lfTlSJYMO7SD8LwJA9rozlljxey/g4RaYEJWXCHwVCQhRS3Mg2NwRnaKFmbnziyZeDiJEXiKe44Q1LkHNHEoZg==}
+  /@mediapipe/tasks-vision/0.1.0-alpha-5:
+    resolution: {integrity: sha512-IHWLX89woNuozZuCmVmTsCB/B2Jxgy52UuUCYqhiq0Dk/Fss4An6N0HnozFoOsfGS+z7fzpGVPFDgW+qv2budA==}
     dev: false
 
   /@nicolo-ribaudo/eslint-scope-5-internals/5.1.1-v1:
